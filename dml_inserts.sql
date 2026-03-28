@@ -10,7 +10,7 @@ insert into hospital (cnpj, nome) values
 ('90.123.456/0001-89', 'Hospital Maternidade Vida'),
 ('01.234.567/0001-90', 'Hospital Oncológico Estrela');
 
-insert into plano_de_saude (nome, telefone, cobertura) values
+insert into plano_de_saude (nome_plano, telefone, cobertura) values
 ('Amil Especial', '1133445566', 'regional'),
 ('Bradesco Saude', '2125334400', 'nacional'),
 ('Unimed Rio', '2139001122', 'regional'),
@@ -22,7 +22,7 @@ insert into plano_de_saude (nome, telefone, cobertura) values
 ('Care Plus', '1141979000', 'nacional'),
 ('Allianz Saude', '1131711000', 'nacional');
 
-insert into credenciamento (data, cnpj, nome) values
+insert into credenciamento (data, cnpj, nome_plano) values
 ('2023-01-15', '12.345.678/0001-01', 'Amil Especial'),
 ('2023-02-10', '23.456.789/0001-12', 'Bradesco Saude'),
 ('2023-03-05', '34.567.890/0001-23', 'Unimed Rio'),
@@ -70,17 +70,17 @@ insert into ala (tipo, leitos_disponiveis, cnpj, id_leito, cre) values
 ('Emergencia', 2, '90.123.456/0001-89', 9, 'CRE-009'),
 ('Cirurgia', 6, '01.234.567/0001-90', 10, 'CRE-010');
 
-insert into paciente (cpf, nome, idade, telefone) values
-('11111111111', 'Ana Silva', 30, '11987654321'),
-('22222222222', 'João Souza', 45, '11912345678'),
-('33333333333', 'Carla Mendes', 25, '11911223344'),
-('44444444444', 'Pedro Oliveira', 50, '11999887766'),
-('55555555555', 'Mariana Costa', 28, '11988776655'),
-('66666666666', 'Lucas Rocha', 35, '11966554433'),
-('77777777777', 'Fernanda Lima', 40, '11955443322'),
-('88888888888', 'Rafael Dias', 60, '11944332211'),
-('99999999999', 'Bianca Alves', 22, '11933221100'),
-('00000000000', 'Carlos Pinto', 55, '11922110099');
+insert into paciente (cpf, nome, idade, telefone, nome_plano) values
+('11111111111', 'Ana Silva', 30, '11987654321', 'Amil Especial'),
+('22222222222', 'João Souza', 45, '11912345678', 'Bradesco Saude'),
+('33333333333', 'Carla Mendes', 25, '11911223344', 'Unimed Rio'),
+('44444444444', 'Pedro Oliveira', 50, '11999887766', 'SulAmerica Gold'),
+('55555555555', 'Mariana Costa', 28, '11988776655', 'NotreDame Inter'),
+('66666666666', 'Lucas Rocha', 35, '11966554433', 'Porto Seguro'),
+('77777777777', 'Fernanda Lima', 40, '11955443322', 'Golden Cross'),
+('88888888888', 'Rafael Dias', 60, '11944332211', 'Sompo Saude'),
+('99999999999', 'Bianca Alves', 22, '11933221100', 'Care Plus'),
+('00000000000', 'Carlos Pinto', 55, '11922110099', 'Allianz Saude');
 
 -- query 5: data_saida null = internação ativa
 -- query 12: João e Lucas internados desde fevereiro = mais de 15 dias
@@ -212,17 +212,17 @@ insert into prescricao_medicamento (id_prescricao, id_medicamento, dosagem, quan
 
 -- query 2: faturas 3 e 9 com Unimed = Carla e Bianca com esse plano
 -- query 9/14: faturamento por plano em 2026
-insert into fatura (data_emissao, data_vencimento, status, forma_pagamento, nome) values
-('2026-03-20', '2026-04-20', 'pago', 'pix', 'Amil Especial'),
-('2026-03-21', '2026-04-21', 'pago', 'cartao', 'Bradesco Saude'),
-('2026-03-22', '2026-04-22', 'pendente', 'boleto', 'Unimed Rio'),
-('2026-03-23', '2026-04-23', 'cancelado', 'dinheiro', 'SulAmerica Gold'),
-('2026-03-24', '2026-04-24', 'pago', 'pix', 'NotreDame Inter'),
-('2026-03-25', '2026-04-25', 'em_analise', 'cartao', 'Porto Seguro'),
-('2026-03-26', '2026-04-26', 'pago', 'boleto', 'Golden Cross'),
-('2026-03-27', '2026-04-27', 'pendente', 'pix', 'Sompo Saude'),
-('2026-03-28', '2026-04-28', 'em_analise', 'cartao', 'Unimed Rio'),
-('2026-03-29', '2026-04-29', 'pago', 'dinheiro', 'Allianz Saude');
+insert into fatura (data_emissao, data_vencimento, status, forma_pagamento, nome_plano, id_atendimento) values
+('2026-03-20', '2026-04-20', 'pago', 'pix', 'Amil Especial', 1),
+('2026-03-21', '2026-04-21', 'pago', 'cartao', 'Bradesco Saude', 2),
+('2026-03-22', '2026-04-22', 'pendente', 'boleto', 'Unimed Rio', 3),
+('2026-03-23', '2026-04-23', 'cancelado', 'dinheiro', 'SulAmerica Gold', 4),
+('2026-03-24', '2026-04-24', 'pago', 'pix', 'NotreDame Inter', 5),
+('2026-03-25', '2026-04-25', 'em_analise', 'cartao', 'Porto Seguro', 6),
+('2026-03-26', '2026-04-26', 'pago', 'boleto', 'Golden Cross', 7),
+('2026-03-27', '2026-04-27', 'pendente', 'pix', 'Sompo Saude', 8),
+('2026-03-28', '2026-04-28', 'em_analise', 'cartao', 'Unimed Rio', 9),
+('2026-03-29', '2026-04-29', 'pago', 'dinheiro', 'Allianz Saude', 10);
 
 -- query 13: itens por tipo para calcular total por tipo de atendimento
 -- query 9/14: itens vinculados às faturas para calcular total por plano

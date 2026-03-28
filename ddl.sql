@@ -1,8 +1,8 @@
 create database Hospital;
 
 create type cobertura_plano as enum('regional', 'nacional');
-create type status_leito as enum ('ocupado', 'livre', 'em manutenção');
-create type turno_enfermeira as enum ('manhã', 'tarde', 'noite');
+create type status_leito as enum ('ocupado', 'livre', 'em manutencao');
+create type turno_enfermeira as enum ('manha', 'tarde', 'noite');
 create type tipo_atendimento as enum ('consulta', 'emergencia', 'revisao');
 create type status_atendimento as enum ('realizado', 'cancelado', 'agendado');
 create type classificacao_laboratorio as enum ('interno', 'externo');
@@ -16,7 +16,7 @@ create table hospital (
 );
 
 create table plano_de_saude (
-    nome varchar(30) primary key unique not null,
+    nome_plano varchar(30) primary key unique not null,
     telefone int,
     cobertura cobertura_plano
 );
@@ -25,9 +25,9 @@ create table credenciamento (
     id_credenciamento serial primary key,
     data date,
     cnpj varchar,
-    nome varchar(50),
+    nome_plano varchar(50),
     foreign key (cnpj) references hospital (cnpj),
-    foreign key (nome) references plano_de_saude (nome)
+    foreign key (nome_plano) references plano_de_saude (nome_plano)
 );
 
 create table leito (
@@ -61,6 +61,8 @@ create table paciente (
     nome varchar(30),
     idade smallint,
     telefone varchar
+    nome_plano varchar,
+    foreign key (nome_plano) references plano_de_saude (nome_plano)
 );
 
 create table internacao (
@@ -159,8 +161,10 @@ create table fatura (
 	data_vencimento date,
 	status status_fatura,
 	forma_pagamento forma_pagamento,
-	nome varchar,
-	foreign key (nome) references plano_de_saude
+	nome_plano varchar,
+	id_atendimento int,
+	foreign key (nome_plano) references plano_de_saude,
+	foreign key (id_atendimento) references atendimento
 );
 
 create table fatura_item (

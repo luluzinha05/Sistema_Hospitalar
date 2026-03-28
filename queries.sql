@@ -33,7 +33,7 @@ values ('2025-03-05', null, '11111111111', 1, 200.00);
 -- Queries
 -- 1- Quais são os nomes e telefones de todos os médicos da especialidade “Cardiologia”? 
 select nome, telefone
-from medico m
+from medico
 where especialidade = 'Cardiologia';
 
 -- 2 Liste o nome e o CPF de todos os pacientes que possuem o plano de saúde “Unimed”. 
@@ -89,19 +89,14 @@ select tipo, (qtd_leitos_ocupados * 100.0 / leitos_disponiveis) as porcentagem_d
 from qtdleitos_diponiveis_ocupados;
 
 -- 9- Qual o valor total faturado para cada plano de saúde no ano de 2026? Apresente o nome  do plano e o valor total. 
-select
-    f.nome, 
-    sum(
-        case
-            when fi.tipo = 'atendimento' then (select custo from atendimento where id_atendimento = fi.id_referencia)
-            when fi.tipo = 'exame' then (select custo from exame where id_exame = fi.id_referencia)
-            when fi.tipo = 'internacao'  then (select custo from internacao where id_internacao = fi.id_referencia)
-        end
-    ) as total
+select f.nome_plano, sum(coalesce(a.custo, e.custo, i.custo, 0)) as total_faturado
 from fatura_item fi
 inner join fatura f on fi.id_fatura = f.id_fatura
+left join atendimento a on fi.tipo = 'atendimento' and fi.id_referencia = a.id_atendimento
+left join exame e on fi.tipo = 'exame' and fi.id_referencia = e.id_exame
+left join internacao i  on fi.tipo = 'internacao'  and fi.id_referencia = i.id_internacao
 where extract(year from f.data_emissao) = 2026
-group by f.nome;
+group by f.nome_plano;
 
 -- 10- Quais são os dois medicamentos mais prescritos no hospital? Apresente o nome do  medicamento e a quantidade de prescrições. 
 select m.nome, count(pm.id_prescricao) as qtd_prescricao from medicamento m 
@@ -122,29 +117,33 @@ where i.data_entrada < current_date - interval '15 days'
 and i.data_saida is null;
 
 -- 13- Qual o valor total faturado por tipo de atendimento (consulta, exame, internação) 
-select
-    fi.tipo,
-    sum(
-        case
-            when fi.tipo = 'atendimento' then (select custo from atendimento where id_atendimento = fi.id_referencia)
-            when fi.tipo = 'exame' then (select custo from exame where id_exame = fi.id_referencia)
-            when fi.tipo = 'internacao'  then (select custo from internacao where id_internacao = fi.id_referencia)
-        end
-    ) as total
+select fi.tipo, sum(coalesce(a.custo, e.custo, i.custo, 0)) as valor_total
 from fatura_item fi
-inner join fatura f on fi.id_fatura = f.id_fatura 
+left join atendimento a on fi.tipo = 'atendimento' and fi.id_referencia = a.id_atendimento
+left join exame e  on fi.tipo = 'exame' and fi.id_referencia = e.id_exame
+left join internacao i  on fi.tipo = 'internacao'  and fi.id_referencia = i.id_internacao
 group by fi.tipo;
 
 -- 14- Qual o valor total faturado por por um determinado plano de saúde.
-select
-    f.nome,
-    sum(
-        case
-            when fi.tipo = 'atendimento' then (select custo from atendimento where id_atendimento = fi.id_referencia)
-            when fi.tipo = 'exame' then (select custo from exame where id_exame = fi.id_referencia)
-            when fi.tipo = 'internacao'  then (select custo from internacao where id_internacao = fi.id_referencia)
-        end
-    ) as total
+select f.nome_plano, sum(coalesce(a.custo, e.custo, i.custo, 0)) as valor_total
 from fatura_item fi
-inner join fatura f on fi.id_fatura = f.id_fatura 
-group by f.nome;
+inner join fatura f on fi.id_fatura = f.id_fatura
+left join atendimento a on fi.tipo = 'atendimento' and fi.id_referencia = a.id_atendimento
+left join exame e on fi.tipo = 'exame' and fi.id_referencia = e.id_exame
+left join internacao i  on fi.tipo = 'internacao'  and fi.id_referencia = i.id_internacao
+where f.nome_plano = 'Unimed'
+group by f.nome_plano;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

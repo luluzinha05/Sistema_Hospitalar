@@ -1,16 +1,20 @@
 -- Update
-INSERT INTO plano_de_saude (nome, telefone, cobertura)
+INSERT INTO plano_de_saude (nome_plano, telefone, cobertura)
 SELECT 'Unimed', telefone, cobertura 
 FROM plano_de_saude 
-WHERE nome = 'Unimed Rio';
+WHERE nome_plano = 'Unimed Rio';
 
 update credenciamento
-set nome = 'Unimed'
-where nome = 'Unimed Rio';
+set nome_plano = 'Unimed'
+where nome_plano = 'Unimed Rio';
 
 update fatura
-set nome = 'Unimed'
-where nome = 'Unimed Rio';
+set nome_plano = 'Unimed'
+where nome_plano = 'Unimed Rio';
+
+update paciente
+set nome_plano = 'Unimed'
+where nome_plano = 'Unimed Rio';
 
 -- Delete
-delete from plano_de_saude where nome = 'Unimed Rio';
+delete from plano_de_saude where nome_plano = 'Unimed Rio';
