@@ -38,25 +38,25 @@ insert into leito (status) values
 ('livre'),
 ('ocupado'),
 ('livre'),
-('em manutenção'),
+('em manutencao'),
 ('ocupado'),
 ('livre'),
-('em manutenção'),
+('em manutencao'),
 ('livre'),
 ('ocupado'),
 ('livre');
 
 insert into enfermeira (cre, nome, turno, especialidade, cre_chefia) values
-('CRE-001', 'Ana Paula Souza', 'manhã', 'UTI', 'CRE-009'),
+('CRE-001', 'Ana Paula Souza', 'manha', 'UTI', 'CRE-009'),
 ('CRE-002', 'Diana Monteiro', 'tarde', 'Pediatria', 'CRE-004'),
 ('CRE-003', 'Esther Medeiros', 'noite', 'Cardiologia', 'CRE-004'),
-('CRE-004', 'Gabriela Carvalho', 'manhã', 'Neurologia', 'CRE-001'),
+('CRE-004', 'Gabriela Carvalho', 'manha', 'Neurologia', 'CRE-001'),
 ('CRE-005', 'Luiza Tavares', 'tarde', 'Oncologia', 'CRE-001'),
 ('CRE-006', 'Vitor Marcelino', 'noite', 'Ortopedia', 'CRE-002'),
-('CRE-007', 'Carlos Henrique', 'manhã', 'Pediatria', 'CRE-002'),
+('CRE-007', 'Carlos Henrique', 'manha', 'Pediatria', 'CRE-002'),
 ('CRE-008', 'Renata Ferreira', 'tarde', 'UTI', 'CRE-003'),
 ('CRE-009', 'Juliana Castro', 'noite', 'Geriatria', 'CRE-003'),
-('CRE-010', 'Marcos Oliveira', 'manhã', 'Cardiologia', 'CRE-001');
+('CRE-010', 'Marcos Oliveira', 'manha', 'Cardiologia', 'CRE-001');
 
 insert into ala (tipo, leitos_disponiveis, cnpj, id_leito, cre) values
 ('UTI', 5, '12.345.678/0001-01', 1, 'CRE-001'),

@@ -60,7 +60,7 @@ create table paciente (
     cpf varchar(20) primary key unique not null,
     nome varchar(30),
     idade smallint,
-    telefone varchar
+    telefone varchar,
     nome_plano varchar,
     foreign key (nome_plano) references plano_de_saude (nome_plano)
 );
