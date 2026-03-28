@@ -1,3 +1,10 @@
+-- View
+create view  qtdleitos_diponiveis_ocupados as
+	select a.tipo, a.leitos_disponiveis, count(a.id_leito) as qtd_leitos_ocupados from ala a
+	inner join leito l on a.id_leito = l.id_leito
+	where l.status = 'ocupado'
+	group by a.tipo, a.leitos_disponiveis;
+
 -- Trigger
 create or replace function valida_leito()
 returns trigger as $$
@@ -8,7 +15,7 @@ begin
 		where cpf = new.cpf
 ) 
 	then
-		RAISE EXCEPTION 'ERROR: ESTE PACIENTE JÁ ESTÁ INTERNADO';
+		raise exception 'ERROR: ESTE PACIENTE JÁ ESTÁ INTERNADO';
 	end if;
 return new;
 end; 
@@ -26,8 +33,11 @@ values ('2025-03-05', null, '11111111111', 1, 200.00);
 -- Queries
 -- 1- Quais são os nomes e telefones de todos os médicos da especialidade “Cardiologia”? 
 select nome, telefone
-from medico
+from medico m
 where especialidade = 'Cardiologia';
+
+-- 2 Liste o nome e o CPF de todos os pacientes que possuem o plano de saúde “Unimed”. 
+
 
 -- 3- Quais exames ainda não têm resultado (data_resultado IS NULL) e foram solicitados no  mês atual? 
 select e.tipo, p.data, l.resultado from exame e
@@ -39,11 +49,13 @@ and extract(year from p.data) = extract(year from current_date);
 
 -- 4- Quantidade de exames por laboratório.
 select 
-    l.id_lab, 
-    count(l.id_exame) as quantidade_exames
-from exame e 
-inner join laudo l on e.id_exame = l.id_exame
-group by l.id_lab;
+    l.id_lab,
+    l.classificacao as tipo_laboratorio,
+    count(lau.id_exame) as quantidade_de_exames_processados
+from laboratorio l
+join laudo lau ON l.id_lab = lau.id_lab
+group by l.id_lab, l.classificacao
+order by quantidade_de_exames_processados;
 
 -- 5-Liste o nome do paciente, o número do leito e a data de entrada para todas as  internações ativas (data_saida IS NULL).
 select 
@@ -65,13 +77,24 @@ where a.data >= current_date - interval '1 month'
 group by m.nome
 order by quantidade_atendimentos desc; 
 
+-- 7- Qual médico com maior número de atendimentos? 
+select m.crm, m.nome, count (a.id_atendimento) as total_atendimentos from medico m
+inner join atendimento a on m.crm = a.crm
+group by m.crm, m.nome 
+order by total_atendimentos desc 
+limit 1;
+
+-- 8- Qual a porcentagem de leitos ocupados em cada ala? Apresente o nome da ala e a  porcentagem. 
+select tipo, (qtd_leitos_ocupados * 100.0 / leitos_disponiveis) as porcentagem_disponiveis 
+from qtdleitos_diponiveis_ocupados;
+
 -- 9- Qual o valor total faturado para cada plano de saúde no ano de 2026? Apresente o nome  do plano e o valor total. 
 select
     f.nome, 
     sum(
         case
             when fi.tipo = 'atendimento' then (select custo from atendimento where id_atendimento = fi.id_referencia)
-            when fi.tipo = 'exame'       then (select custo from exame where id_exame = fi.id_referencia)
+            when fi.tipo = 'exame' then (select custo from exame where id_exame = fi.id_referencia)
             when fi.tipo = 'internacao'  then (select custo from internacao where id_internacao = fi.id_referencia)
         end
     ) as total
@@ -104,7 +127,7 @@ select
     sum(
         case
             when fi.tipo = 'atendimento' then (select custo from atendimento where id_atendimento = fi.id_referencia)
-            when fi.tipo = 'exame'       then (select custo from exame where id_exame = fi.id_referencia)
+            when fi.tipo = 'exame' then (select custo from exame where id_exame = fi.id_referencia)
             when fi.tipo = 'internacao'  then (select custo from internacao where id_internacao = fi.id_referencia)
         end
     ) as total
@@ -118,14 +141,10 @@ select
     sum(
         case
             when fi.tipo = 'atendimento' then (select custo from atendimento where id_atendimento = fi.id_referencia)
-            when fi.tipo = 'exame'       then (select custo from exame where id_exame = fi.id_referencia)
+            when fi.tipo = 'exame' then (select custo from exame where id_exame = fi.id_referencia)
             when fi.tipo = 'internacao'  then (select custo from internacao where id_internacao = fi.id_referencia)
         end
     ) as total
 from fatura_item fi
 inner join fatura f on fi.id_fatura = f.id_fatura 
 group by f.nome;
-
-
-
-

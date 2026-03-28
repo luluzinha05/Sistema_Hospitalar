@@ -1,6 +1,3 @@
--- ==========================================
--- INSERTS ORIGINAIS (sem alteração)
--- ==========================================
 insert into hospital (cnpj, nome) values
 ('12.345.678/0001-01', 'Hospital Central de Alvorada'),
 ('23.456.789/0001-12', 'Santa Casa de Misericórdia'),
