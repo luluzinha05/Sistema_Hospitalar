@@ -17,7 +17,7 @@ create table hospital (
 
 create table plano_de_saude (
     nome_plano varchar(30) primary key unique not null,
-    telefone int,
+    telefone varchar,
     cobertura cobertura_plano
 );
 
@@ -60,7 +60,7 @@ create table paciente (
     cpf varchar(20) primary key unique not null,
     nome varchar(30),
     idade smallint,
-    telefone varchar,
+    telefone varchar
     nome_plano varchar,
     foreign key (nome_plano) references plano_de_saude (nome_plano)
 );
@@ -169,10 +169,15 @@ create table fatura (
 
 create table fatura_item (
     id_item serial primary key,
-    id_fatura int,
     tipo tipo_fatura_item,
-    id_referencia int,
-    foreign key (id_fatura) references fatura
+    id_fatura int,
+    id_atendimento int,
+    id_exame int,
+    id_internacao int,
+    foreign key (id_fatura) references fatura,
+    foreign key (id_atendimento) references atendimento,
+    foreign key (id_exame) references exame,
+    foreign key (id_internacao) references internacao
 );
 
 create table pesquisa_satisfacao (
