@@ -37,7 +37,8 @@ from medico
 where especialidade = 'Cardiologia';
 
 -- 2 Liste o nome e o CPF de todos os pacientes que possuem o plano de saúde “Unimed”. 
-
+select nome, telefone from paciente
+where nome_plano = 'Unimed';
 
 -- 3- Quais exames ainda não têm resultado (data_resultado IS NULL) e foram solicitados no  mês atual? 
 select e.tipo, p.data, l.resultado from exame e
@@ -90,11 +91,11 @@ from qtdleitos_diponiveis_ocupados;
 
 -- 9- Qual o valor total faturado para cada plano de saúde no ano de 2026? Apresente o nome  do plano e o valor total. 
 select f.nome_plano, sum(coalesce(a.custo, e.custo, i.custo, 0)) as total_faturado
-from fatura_item fi
-inner join fatura f on fi.id_fatura = f.id_fatura
-left join atendimento a on fi.tipo = 'atendimento' and fi.id_referencia = a.id_atendimento
-left join exame e on fi.tipo = 'exame' and fi.id_referencia = e.id_exame
-left join internacao i  on fi.tipo = 'internacao'  and fi.id_referencia = i.id_internacao
+from fatura f
+inner join fatura_item fi on f.id_fatura = fi.id_fatura
+left join atendimento a on fi.id_atendimento = a.id_atendimento
+left join exame e on fi.id_exame  = e.id_exame
+left join internacao i  on fi.id_internacao  = i.id_internacao
 where extract(year from f.data_emissao) = 2026
 group by f.nome_plano;
 
@@ -119,31 +120,17 @@ and i.data_saida is null;
 -- 13- Qual o valor total faturado por tipo de atendimento (consulta, exame, internação) 
 select fi.tipo, sum(coalesce(a.custo, e.custo, i.custo, 0)) as valor_total
 from fatura_item fi
-left join atendimento a on fi.tipo = 'atendimento' and fi.id_referencia = a.id_atendimento
-left join exame e  on fi.tipo = 'exame' and fi.id_referencia = e.id_exame
-left join internacao i  on fi.tipo = 'internacao'  and fi.id_referencia = i.id_internacao
+left join atendimento a on fi.id_atendimento = a.id_atendimento
+left join exame e on fi.id_exame  = e.id_exame
+left join internacao i  on fi.id_internacao  = i.id_internacao
 group by fi.tipo;
 
 -- 14- Qual o valor total faturado por por um determinado plano de saúde.
 select f.nome_plano, sum(coalesce(a.custo, e.custo, i.custo, 0)) as valor_total
 from fatura_item fi
 inner join fatura f on fi.id_fatura = f.id_fatura
-left join atendimento a on fi.tipo = 'atendimento' and fi.id_referencia = a.id_atendimento
-left join exame e on fi.tipo = 'exame' and fi.id_referencia = e.id_exame
-left join internacao i  on fi.tipo = 'internacao'  and fi.id_referencia = i.id_internacao
+left join atendimento a on fi.id_atendimento = a.id_atendimento
+left join exame e on fi.id_exame  = e.id_exame
+left join internacao i  on fi.id_internacao  = i.id_internacao
 where f.nome_plano = 'Unimed'
 group by f.nome_plano;
-
-
-
-
-
-
-
-
-
-
-
-
-
-

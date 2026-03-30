@@ -82,8 +82,6 @@ insert into paciente (cpf, nome, idade, telefone, nome_plano) values
 ('99999999999', 'Bianca Alves', 22, '11933221100', 'Care Plus'),
 ('00000000000', 'Carlos Pinto', 55, '11922110099', 'Allianz Saude');
 
--- query 5: data_saida null = internação ativa
--- query 12: João e Lucas internados desde fevereiro = mais de 15 dias
 insert into internacao (data_entrada, data_saida, custo, cpf, id_leito) values
 ('2026-03-01', '2026-03-05', 1500.00, '11111111111', 1),
 ('2026-02-01', null, 2300.00, '22222222222', 2),
@@ -96,8 +94,6 @@ insert into internacao (data_entrada, data_saida, custo, cpf, id_leito) values
 ('2026-03-09', null, 1100.00, '99999999999', 4),
 ('2026-03-10', '2026-03-17', 3500.00, '00000000000', 5);
 
--- query 1: dois médicos com Cardiologia
--- query 7: Dr. Arnaldo terá mais atendimentos
 insert into medico (crm, nome, telefone, especialidade) values
 ('CRM/SP 123456', 'Dr. Arnaldo Silva', '11991234567', 'Cardiologia'),
 ('CRM/RJ 234567', 'Dra. Beatriz Souza', '21992345678', 'Pediatria'),
@@ -110,8 +106,6 @@ insert into medico (crm, nome, telefone, especialidade) values
 ('CRM/PE 901234', 'Dr. Igor Guimarães', '81999012345', 'Urologia'),
 ('CRM/DF 012345', 'Dra. Julia Borges', '61990123456', 'Cardiologia');
 
--- query 6/7: todos em março 2026
--- Dr. Arnaldo (CRM/SP 123456) com 3 atendimentos = maior
 insert into atendimento (data, hora, status, tipo, observacao, custo, crm, cpf) values
 ('2026-03-20', '08:30:00', 'realizado', 'consulta', 'Paciente apresenta dores leves.', 250.00, 'CRM/SP 123456', '11111111111'),
 ('2026-03-21', '10:00:00', 'realizado', 'emergencia', 'Crise hipertensiva.', 500.00, 'CRM/SP 123456', '22222222222'),
@@ -136,7 +130,6 @@ insert into exame (tipo, custo, descricao, anexo, cpf) values
 ('PSA Total', 110.00, 'Rastreamento de câncer de próstata', null, '99999999999'),
 ('Densitometria Óssea', 250.00, 'Avaliação da densidade mineral dos ossos', null, '00000000000');
 
--- query 3: exames 7,8,9,10 em março 2026 sem laudo ainda
 insert into pedido (data, hora, crm, id_exame) values
 ('2026-03-01', '08:00', 'CRM/SP 123456', 1),
 ('2026-03-05', '09:30', 'CRM/RJ 234567', 2),
@@ -149,7 +142,6 @@ insert into pedido (data, hora, crm, id_exame) values
 ('2026-03-26', '16:20', 'CRM/PE 901234', 9),
 ('2026-03-27', '07:30', 'CRM/DF 012345', 10);
 
--- query 4: quantidade de exames por laboratório
 insert into laboratorio (classificacao) values
 ('externo'),
 ('interno'),
@@ -162,8 +154,6 @@ insert into laboratorio (classificacao) values
 ('externo'),
 ('interno');
 
--- query 3: exames 7,8,9,10 SEM laudo = aparecem na query
--- query 4: laudos distribuídos entre os laboratórios
 insert into laudo (resultado, id_exame, id_lab) values
 ('Hemograma normal', 1, 1),
 ('Hemograma com anemia', 2, 2),
@@ -171,7 +161,6 @@ insert into laudo (resultado, id_exame, id_lab) values
 ('Ressonância sem lesões', 4, 4),
 ('Órgãos abdominais normais', 5, 5),
 ('Tomografia sem alterações', 6, 6);
--- exames 7, 8, 9, 10 sem laudo → retornados na query 3
 
 insert into prescricao (data, id_atendimento) values
 ('2026-03-20', 1),
@@ -197,7 +186,6 @@ insert into medicamento (nome) values
 ('Cetirizina'),
 ('Prednisona');
 
--- query 10: Paracetamol (3x) e Dipirona (3x) os mais prescritos
 insert into prescricao_medicamento (id_prescricao, id_medicamento, dosagem, quantidade_dias, descricao) values
 (1, 1, '500mg', 5, 'Tomar 1 comprimido a cada 8h'),
 (2, 1, '500mg', 3, 'Tomar em caso de dor'),
@@ -210,8 +198,6 @@ insert into prescricao_medicamento (id_prescricao, id_medicamento, dosagem, quan
 (9, 5, '20mg', 30, 'Tomar em jejum pela manhã'),
 (10, 7, '50mg', 60, 'Controle de pressão arterial');
 
--- query 2: faturas 3 e 9 com Unimed = Carla e Bianca com esse plano
--- query 9/14: faturamento por plano em 2026
 insert into fatura (data_emissao, data_vencimento, status, forma_pagamento, nome_plano, id_atendimento) values
 ('2026-03-20', '2026-04-20', 'pago', 'pix', 'Amil Especial', 1),
 ('2026-03-21', '2026-04-21', 'pago', 'cartao', 'Bradesco Saude', 2),
@@ -224,39 +210,37 @@ insert into fatura (data_emissao, data_vencimento, status, forma_pagamento, nome
 ('2026-03-28', '2026-04-28', 'em_analise', 'cartao', 'Unimed Rio', 9),
 ('2026-03-29', '2026-04-29', 'pago', 'dinheiro', 'Allianz Saude', 10);
 
--- query 13: itens por tipo para calcular total por tipo de atendimento
--- query 9/14: itens vinculados às faturas para calcular total por plano
-insert into fatura_item (id_fatura, tipo, id_referencia) values
-(1, 'atendimento', 1),
-(1, 'exame', 1),
-(1, 'internacao', 1),
-(2, 'atendimento', 2),
-(2, 'exame', 2),
-(2, 'internacao', 2),
-(3, 'atendimento', 3),
-(3, 'exame', 3),
-(3, 'internacao', 3),
-(4, 'atendimento', 4),
-(4, 'exame', 4),
-(4, 'internacao', 4),
-(5, 'atendimento', 5),
-(5, 'exame', 5),
-(5, 'internacao', 5),
-(6, 'atendimento', 6),
-(6, 'exame', 6),
-(6, 'internacao', 6),
-(7, 'atendimento', 7),
-(7, 'exame', 7),
-(7, 'internacao', 7),
-(8, 'atendimento', 8),
-(8, 'exame', 8),
-(8, 'internacao', 8),
-(9, 'atendimento', 9),
-(9, 'exame', 9),
-(9, 'internacao', 9),
-(10, 'atendimento', 10),
-(10, 'exame', 10),
-(10, 'internacao', 10);
+insert into fatura_item (id_fatura, id_atendimento, id_exame, id_internacao) values 
+(1, 1, null, null),
+(1, null, 1, null),
+(1, null, null, 1),
+(2, 2, null, null),
+(2, null, 2, null),
+(2, null, null, 2),
+(3, 3, null, null),
+(3, null, 3, null),
+(3, null, null, 3),
+(4, 4, null, null),
+(4, null, 4, null),
+(4, null, null, 4),
+(5, 5, null, null),
+(5, null, 5, null),
+(5, null, null, 5),
+(6, 6, null, null),
+(6, null, 6, null),
+(6, null, null, 6),
+(7, 7, null, null),
+(7, null, 7, null),
+(7, null, null, 7),
+(8, 8, null, null),
+(8, null, 8, null),
+(8, null, null, 8),
+(9, 9, null, null),
+(9, null, 9, null),
+(9, null, null, 9),
+(10, 10, null, null),
+(10, null, 10, null),
+(10, null, null, 10);
 
 insert into pesquisa_satisfacao (data, nota, comentario, recomendaria, tempo_espera, id_atendimento) values
 ('2026-03-20', 9, 'Atendimento muito atencioso do Dr. Arnaldo.', true, 15, 1),
