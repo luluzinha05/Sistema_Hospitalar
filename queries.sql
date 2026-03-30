@@ -104,15 +104,6 @@ inner join fatura f on fi.id_fatura = f.id_fatura
 where extract(year from f.data_emissao) = 2026
 group by f.nome_plano;
 
-select f.nome_plano, sum(coalesce(a.custo, e.custo, i.custo, 0)) as total_faturado
-from fatura f
-inner join fatura_item fi on f.id_fatura = fi.id_fatura
-left join atendimento a on fi.id_atendimento = a.id_atendimento
-left join exame e on fi.id_exame  = e.id_exame
-left join internacao i  on fi.id_internacao  = i.id_internacao
-where extract(year from f.data_emissao) = 2026
-group by f.nome_plano;
-
 -- 10- Quais são os dois medicamentos mais prescritos no hospital? Apresente o nome do  medicamento e a quantidade de prescrições. 
 select m.nome, count(pm.id_prescricao) as qtd_prescricao from medicamento m 
 inner join prescricao_medicamento pm on m.id_medicamento = pm.id_medicamento
@@ -145,13 +136,6 @@ from fatura_item fi
 inner join fatura f on fi.id_fatura = f.id_fatura 
 group by fi.tipo;
 
-select fi.tipo, sum(coalesce(a.custo, e.custo, i.custo, 0)) as valor_total
-from fatura_item fi
-left join atendimento a on fi.id_atendimento = a.id_atendimento
-left join exame e on fi.id_exame  = e.id_exame
-left join internacao i  on fi.id_internacao  = i.id_internacao
-group by fi.tipo;
-
 -- 14- Qual o valor total faturado por por um determinado plano de saúde.
 select
     f.nome,
@@ -165,12 +149,3 @@ select
 from fatura_item fi
 inner join fatura f on fi.id_fatura = f.id_fatura 
 group by f.nome; 
-
-select f.nome_plano, sum(coalesce(a.custo, e.custo, i.custo, 0)) as valor_total
-from fatura_item fi
-inner join fatura f on fi.id_fatura = f.id_fatura
-left join atendimento a on fi.id_atendimento = a.id_atendimento
-left join exame e on fi.id_exame  = e.id_exame
-left join internacao i  on fi.id_internacao  = i.id_internacao
-where f.nome_plano = 'Unimed'
-group by f.nome_plano;
